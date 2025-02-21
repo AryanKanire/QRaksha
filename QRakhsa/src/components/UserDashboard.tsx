@@ -1,4 +1,4 @@
-import React, { useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 interface UserDashboardProps {
@@ -41,6 +41,13 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
       }
     }
   };
+
+
+  const handleSOSCall = () => {
+    // Call emergency services or send SOS alert
+    alert("SOS call initiated!");
+  };
+
   return (
     <div className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">User Dashboard</h2>
@@ -161,22 +168,49 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
         )}
       </div>
 
-      <div className="mt-4 flex flex-col items-center">
-        <div ref={qrRef}>
-          <QRCodeCanvas 
-            value={qrData} 
-            size={150}
-            level="H"
-            includeMargin={true}
-          />
-        </div>
-        <button
-          onClick={downloadHighResQR}
-          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-        >
-          Download High-Res QR Code
-        </button>
-      </div>
+      <div className="mt-4 flex flex-row items-center justify-center gap-8">
+  {/* QR Code Section */}
+  <div className="flex flex-col items-center">
+    <div ref={qrRef}>
+      <QRCodeCanvas
+        value={qrData}
+        size={150}
+        level="H"
+        includeMargin={true}
+      />
+    </div>
+    <button
+      onClick={downloadHighResQR}
+      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Download QR Code
+    </button>
+  </div>
+
+  {/* SOS Button Section */}
+  <div className="flex flex-col items-center">
+    <button
+      onClick={handleSOSCall}
+      className="w-36 h-36 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xl shadow-md transition-all duration-300 active:translate-y-1 active:shadow-sm flex items-center justify-center relative animate-pulse"
+      style={{
+        boxShadow: `
+          0 4px 6px rgba(0, 0, 0, 0.2),
+          0 1px 3px rgba(0, 0, 0, 0.08),
+          0 8px 12px -4px rgba(0, 0, 0, 0.3),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.2)
+        `,
+      }}
+    >
+      SOS
+      <div
+        className="absolute top-0 left-0 w-full h-full rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent)`,
+        }}
+      />
+    </button>
+  </div>
+</div>
     </div>
   );
 };
