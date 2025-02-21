@@ -9,8 +9,7 @@ import UserProfile from "./components/userProfile"; // Assuming userProfile.tsx 
 import type { Employee, Alert } from "./types"; // Assuming types.ts or types.tsx is in src folder
 import Homepage from './components/HomePage'; // Assuming HomePage.tsx is in components folder
 import LoginPage from './components/LoginPage'; // Assuming LoginPage.tsx is in components folder
-// import ScanQR from './components/ScanQR'; // Assuming ScanQR.tsx is in components/ScanQR.tsx
-// import SettingsPage from './components/SettingsPage'; // Assuming SettingsPage.tsx is in components/SettingsPage.tsx
+import UserLayout from "./components/UserLayout";
 
 
 // Mock Employee Data (Keep this - no changes needed)
@@ -122,14 +121,7 @@ function App() {
           />
         </Route>
 
-        <Route
-          path="/employee/:employeeId"
-          element={
-            // <Layout>
-              <EmployeeCard />
-            // </Layout>
-          }
-        />
+       
 
 
         <Route path="/signup" element={<UserSignupForm />} /> {/* Signup page at "/signup" (outside layouts) */}
@@ -143,6 +135,13 @@ function App() {
             </div>
           }
         />
+
+        {/* User Layout Routes */}
+        <Route path="/user" element={<UserLayout />}>  {/* Use UserLayout as element */}
+          <Route path="" element={<UserDashboard user={selectedEmployee} onSOS={handleSOS} />} /> {/* /user/dashboard route */}
+          <Route path="settings" element={<div>User Settings Page Content</div>} /> {/* /user/settings - Dummy Content */}
+          {/* <Route path="*" element={<Navigate to="/dashboard" replace />} /> Redirect /user to /user/dashboard */}
+        </Route>
       </Routes>
     </BrowserRouter>
   );

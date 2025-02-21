@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import QRCode, { QRCodeCanvas } from "qrcode.react";
+import React, { useState,useRef } from "react";
+import { QRCodeCanvas } from "qrcode.react";
 
 interface UserDashboardProps {
   user: {
@@ -15,7 +15,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const [updatedUser, setUpdatedUser] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [qrData, setQrData] = useState<string>(JSON.stringify(user));
-  const qrRef = useRef<QRCode | null>(null); // Create a ref for the QRCode component
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,33 +30,17 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
     setIsEditing(false);
   };
 
-  const downloadQRCode = () => {
-    console.log("downloadQRCode function called");
-  
-    setTimeout(() => { // Add a small delay
-      if (qrRef.current) {
-        console.log("qrRef.current is valid (delayed):", qrRef.current);
-        const canvas = qrRef.current.getCanvas();
-        console.log("Canvas element (delayed):", canvas);
-        if (canvas) {
-          const url = canvas.toDataURL("image/png");
-          console.log("Data URL (delayed):", url);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = "emergency_qr_code.png";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          console.log("Download initiated (delayed)");
-        } else {
-          console.error("Canvas is null or undefined (delayed)");
-        }
-      } else {
-        console.error("qrRef.current is null or undefined (delayed)");
+  const downloadHighResQR = () => {
+    if (qrRef.current) {
+      const canvas = qrRef.current.querySelector("canvas");
+      if (canvas) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "qraksha-qr.png";
+        link.click();
       }
-    }, 100); // 100 milliseconds delay (adjust if needed)
+    }
   };
-
   return (
     <div className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">User Dashboard</h2>
@@ -166,30 +150,31 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
             Edit Info
           </button>
         ) : (
-          <div className="flex"> {/* Container for buttons when editing */}
+          <div className="flex">
             <button
               onClick={generateUpdatedQR}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2" // Added mr-2 for spacing
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
             >
               Save & Generate New QR
-            </button>
-            <button
-              onClick={downloadQRCode}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-            >
-              Download QR
             </button>
           </div>
         )}
       </div>
 
-      <div className="mt-4 flex flex-col items-center"> {/* Changed to flex column and items-center */}
-        <QRCodeCanvas value={qrData} size={150} ref={qrRef} />
+      <div className="mt-4 flex flex-col items-center">
+        <div ref={qrRef}>
+          <QRCodeCanvas 
+            value={qrData} 
+            size={150}
+            level="H"
+            includeMargin={true}
+          />
+        </div>
         <button
-          onClick={downloadQRCode}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mt-3" // Added mt-3 for spacing
+          onClick={downloadHighResQR}
+          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
-          Download QR
+          Download High-Res QR Code
         </button>
       </div>
     </div>
