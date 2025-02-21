@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import QRCode, { QRCodeCanvas } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 interface UserDashboardProps {
   user: {
@@ -15,7 +15,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const [updatedUser, setUpdatedUser] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [qrData, setQrData] = useState<string>(JSON.stringify(user));
-  const qrRef = useRef<QRCode | null>(null); // Create a ref for the QRCode component
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,31 +30,22 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
     setIsEditing(false);
   };
 
-  const downloadQRCode = () => {
-    console.log("downloadQRCode function called");
-  
-    setTimeout(() => { // Add a small delay
-      if (qrRef.current) {
-        console.log("qrRef.current is valid (delayed):", qrRef.current);
-        const canvas = qrRef.current.getCanvas();
-        console.log("Canvas element (delayed):", canvas);
-        if (canvas) {
-          const url = canvas.toDataURL("image/png");
-          console.log("Data URL (delayed):", url);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = "emergency_qr_code.png";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          console.log("Download initiated (delayed)");
-        } else {
-          console.error("Canvas is null or undefined (delayed)");
-        }
-      } else {
-        console.error("qrRef.current is null or undefined (delayed)");
+  const downloadHighResQR = () => {
+    if (qrRef.current) {
+      const canvas = qrRef.current.querySelector("canvas");
+      if (canvas) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "qraksha-qr.png";
+        link.click();
       }
-    }, 100); // 100 milliseconds delay (adjust if needed)
+    }
+  };
+
+
+  const handleSOSCall = () => {
+    // Call emergency services or send SOS alert
+    alert("SOS call initiated!");
   };
 
   return (
@@ -166,32 +157,60 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
             Edit Info
           </button>
         ) : (
-          <div className="flex"> {/* Container for buttons when editing */}
+          <div className="flex">
             <button
               onClick={generateUpdatedQR}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2" // Added mr-2 for spacing
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
             >
               Save & Generate New QR
-            </button>
-            <button
-              onClick={downloadQRCode}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-            >
-              Download QR
             </button>
           </div>
         )}
       </div>
 
-      <div className="mt-4 flex flex-col items-center"> {/* Changed to flex column and items-center */}
-        <QRCodeCanvas value={qrData} size={150} ref={qrRef} />
-        <button
-          onClick={downloadQRCode}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mt-3" // Added mt-3 for spacing
-        >
-          Download QR
-        </button>
-      </div>
+      <div className="mt-4 flex flex-row items-center justify-center gap-8">
+  {/* QR Code Section */}
+  <div className="flex flex-col items-center">
+    <div ref={qrRef}>
+      <QRCodeCanvas
+        value={qrData}
+        size={150}
+        level="H"
+        includeMargin={true}
+      />
+    </div>
+    <button
+      onClick={downloadHighResQR}
+      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Download QR Code
+    </button>
+  </div>
+
+  {/* SOS Button Section */}
+  <div className="flex flex-col items-center">
+    <button
+      onClick={handleSOSCall}
+      className="w-36 h-36 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xl shadow-md transition-all duration-300 active:translate-y-1 active:shadow-sm flex items-center justify-center relative animate-pulse"
+      style={{
+        boxShadow: `
+          0 4px 6px rgba(0, 0, 0, 0.2),
+          0 1px 3px rgba(0, 0, 0, 0.08),
+          0 8px 12px -4px rgba(0, 0, 0, 0.3),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.2)
+        `,
+      }}
+    >
+      SOS
+      <div
+        className="absolute top-0 left-0 w-full h-full rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent)`,
+        }}
+      />
+    </button>
+  </div>
+</div>
     </div>
   );
 };

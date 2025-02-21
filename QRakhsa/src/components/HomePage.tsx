@@ -69,8 +69,8 @@ const Homepage = () => {
         </div>
       </section>
 
-      <footer style={styles.footer}>
-      </footer>
+      {/* <footer style={styles.footer}> */}
+      {/* </footer> */}
     </div>
   );
 };
@@ -80,6 +80,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    // justifyContent: 'center',
     padding: '60px 30px',
     backgroundColor: '#111827',
     fontFamily: "'Roboto', 'Helvetica Neue', Arial, sans-serif",
