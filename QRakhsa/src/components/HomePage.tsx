@@ -1,27 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import the Link component
-import { AlertCircle } from 'lucide-react'; // Import AlertCircle icon
+import { Link } from 'react-router-dom';
+import { AlertCircle } from 'lucide-react';
 
 const Homepage = () => {
   return (
     <div style={styles.container}>
-
-      {/* EmergencyQRBrand moved to top left */}
       <div style={styles.emergencyQRBrandTopLeftContainer}>
         <Link to="/" style={styles.brandLink}>
           <AlertCircle style={styles.brandIcon} />
           <span style={styles.brandText}>EmergencyQR</span>
         </Link>
       </div>
-
-      {/* Login Button moved to top right */}
       <div style={styles.loginButtonTopRightContainer}>
         <Link to="/login" style={styles.loginButton}>
           Continue with Login
         </Link>
       </div>
 
-      {/* Hero Section */}
       <section style={styles.heroSection}>
         <header style={styles.header}>
           <h1 style={styles.title}>QRaksha</h1>
@@ -29,7 +24,6 @@ const Homepage = () => {
         </header>
       </section>
 
-      {/* What We Offer Section - Abbreviated */}
       <section style={styles.offerSection}>
         <div style={styles.card}>
           <h2 style={styles.cardTitle}>What We Offer</h2>
@@ -39,7 +33,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Key Features Section - Horizontal Cards */}
       <section style={styles.featuresSection}>
         <h2 style={styles.sectionTitle}>Key Features & Real-Time Impact</h2>
         <div style={styles.featureCardsContainerHorizontal}>
@@ -49,28 +42,24 @@ const Homepage = () => {
               Unique, scannable codes with emergency contacts & medical info. Facilitates instant access to crucial data during crises.
             </p>
           </div>
-
           <div style={styles.featureCardHorizontal}>
             <h3 style={styles.featureCardTitle}>SOS Alert System</h3>
             <p style={styles.featureCardDescription}>
               One-click emergency button sends live location via SMS, email, and push notifications. Ensures rapid response and real-time tracking of distress signals.
             </p>
           </div>
-
           <div style={styles.featureCardHorizontal}>
             <h3 style={styles.featureCardTitle}>Admin Dashboard for Incident Tracking</h3>
             <p style={styles.featureCardDescription}>
               Role-based access to monitor emergency alerts & locations. Centralized system improves incident handling efficiency by 25%.
             </p>
           </div>
-
           <div style={styles.featureCardHorizontal}>
             <h3 style={styles.featureCardTitle}>Live Location Tracking with Geo-Fencing</h3>
             <p style={styles.featureCardDescription}>
               Monitors employees in real time with GPS-based location accuracy. Enhances security with proactive boundary alerts.
             </p>
           </div>
-
           <div style={styles.featureCardHorizontal}>
             <h3 style={styles.featureCardTitle}>AI-Driven Emergency Prediction (Future Scope)</h3>
             <p style={styles.featureCardDescription}>
@@ -81,16 +70,11 @@ const Homepage = () => {
       </section>
 
       <footer style={styles.footer}>
-        {/* <p style={styles.footerText}>
-          Empowering Safer Workplaces with Intelligent Technology.
-        </p> */}
       </footer>
-
     </div>
   );
 };
 
-// Enhanced and Sectioned Inline Styles
 const styles = {
   container: {
     display: 'flex',
@@ -102,40 +86,36 @@ const styles = {
     color: '#f8f8f8',
     textAlign: 'center',
     position: 'relative',
-    // overflow: 'hidden',
   },
-  // EmergencyQRBrand Top Left Container (NEW - for top left logo)
   emergencyQRBrandTopLeftContainer: {
     position: 'absolute',
     top: '20px',
-    left: '30px', // Positioned to the left
+    left: '30px',
     zIndex: 10,
   },
   brandLink: {
     display: 'flex',
     alignItems: 'center',
-    textDecoration: 'none', // Remove underline from Link
-    color: 'inherit',        // Inherit text color from parent
+    textDecoration: 'none',
+    color: 'inherit',
   },
   brandIcon: {
-    height: '2.5rem', // Adjusted icon size (in rem for relative sizing)
-    width: '2.5rem',  // Adjusted icon size
-    color: 'red', // Icon color (you can adjust this or use Tailwind classes)
+    height: '2.5rem',
+    width: '2.5rem',
+    color: 'red',
   },
   brandText: {
-    marginLeft: '0.5rem', // Spacing between icon and text (in rem)
-    fontSize: '1.5rem',  // Adjusted font size (in rem)
+    marginLeft: '0.5rem',
+    fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: '#f8f8f8', // Text color (white/off-white)
+    color: '#f8f8f8',
   },
-  // Login Button Top Right Container
   loginButtonTopRightContainer: {
     position: 'absolute',
     top: '20px',
     right: '30px',
     zIndex: 10,
   },
-  // Hero Section Styles
   heroSection: {
     marginBottom: '60px',
   },
@@ -156,8 +136,6 @@ const styles = {
     marginBottom: '20px',
     fontStyle: 'italic',
   },
-
-  // What We Offer Section Styles
   offerSection: {
     marginBottom: '60px',
     width: '100%',
@@ -188,12 +166,9 @@ const styles = {
     lineHeight: '1.7',
     color: '#ddd',
   },
-
-  // Key Features Section Styles - Horizontal Cards - ADJUSTED for Responsiveness and Bigger Cards
   featuresSection: {
     marginBottom: '70px',
     width: '100%',
-    // maxWidth: '1200px',  Removed maxWidth - for responsiveness
   },
   sectionTitle: {
     fontSize: '2.2em',
@@ -205,54 +180,54 @@ const styles = {
   },
   featureCardsContainerHorizontal: {
     display: 'flex',
-    flexDirection: 'row', // Default to row layout for wider screens
+    flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'stretch',
-    gap: '20px', // Slightly increased gap for bigger cards
-    overflowX: 'hidden',
-    paddingBottom: '0px',
+    gap: '20px',
+    overflowX: 'auto', // Changed from hidden to auto to allow horizontal scroll if needed
+    paddingBottom: '20px', // Added padding to accommodate scrollbar if it appears on smaller screens
 
     // Media Query for smaller screens (e.g., tablets and phones)
-    '@media (max-width: 768px)': { // Adjust breakpoint as needed
-      flexDirection: 'column', // Switch to column layout on smaller screens
-      alignItems: 'center',     // Center items when stacked vertically
-      gap: '40px',             // Increased vertical gap for bigger stacked cards
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '30px', // Adjusted vertical gap for stacked cards
+      overflowX: 'hidden', // Hide horizontal scroll when stacked vertically
+      paddingBottom: '0px', // Remove bottom padding when vertically stacked
     },
   },
   featureCardHorizontal: {
     backgroundColor: '#1e293b',
-    padding: '30px', // Increased padding for bigger cards
-    borderRadius: '12px', // Slightly increased border-radius to match bigger size
-    boxShadow: '0 8px 20px rgba(0,0,0,0.4)', // Adjusted shadow for bigger cards
+    padding: '30px',
+    borderRadius: '12px',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
     border: '1px solid #374151',
     textAlign: 'left',
-    flex: '1', // Still use flex: '1' for horizontal distribution
-    minWidth: '320px', // Increased minWidth to accommodate bigger content
+    flex: '1 1 300px', // Flex-grow, flex-shrink, flex-basis. flex-basis set to a minimum width
+    minWidth: '300px', //  Ensures cards don't shrink too much
+    maxWidth: '400px', // Added maxWidth to control max width of cards
 
-    // Media Query for smaller screens (adjustments for stacked cards)
+    // Media Query adjustments for smaller screens
     '@media (max-width: 768px)': {
-      minWidth: 'auto', // Allow full width when stacked
-      width: '100%',     // Take full width of container when stacked
-      maxWidth: '500px', // Optional: Increased max width for stacked cards if needed
-      textAlign: 'center', // Center text in stacked cards
-      padding: '40px', // Slightly increased padding for stacked cards on small screens
+      minWidth: 'auto',
+      maxWidth: '100%', // Take full width of container when stacked
+      width: '100%',
+      textAlign: 'center',
+      padding: '30px', // Adjusted padding for stacked cards
     },
   },
   featureCardTitle: {
-    fontSize: '1.5em', // Increased title font size
-    fontWeight: 'bold', // Made title bolder for emphasis
-    marginBottom: '15px', // Increased margin for better spacing
+    fontSize: '1.5em',
+    fontWeight: 'bold',
+    marginBottom: '15px',
     color: '#3498db',
   },
   featureCardDescription: {
-    fontSize: '1.1em', // Increased description font size
-    lineHeight: '1.7', // Adjusted line height for bigger text
+    fontSize: '1.1em',
+    lineHeight: '1.7',
     color: '#ddd',
   },
-
-  // Get Started Section Styles - REMOVED
-
-  footer: { // Footer styles remain, but Get Started Section removed
+  footer: {
     marginBottom: '20px',
     marginTop: '60px',
     paddingBottom: '20px',
