@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { AlertCircle, Home, QrCode, Settings, Users } from 'lucide-react';
+import { AlertCircle, Home, Settings, Users } from 'lucide-react'; // REMOVED QrCode import
 
 const Layout: React.FC = () => {
   const location = useLocation();
-
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -20,18 +19,19 @@ const Layout: React.FC = () => {
             </div>
             <div className="flex space-x-4">
               <Link
-                to="/"
+                to="/" // Link to Homepage (root path)
                 className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
-                  isActive('/') 
-                    ? 'text-blue-600 dark:text-blue-500' 
+                  isActive('/')
+                    ? 'text-blue-600 dark:text-blue-500'
                     : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500'
                 }`}
               >
                 <Home className="h-5 w-5 mr-1" />
                 Home
               </Link>
-              <Link
-                to="/scan"
+              {/* REMOVED SCAN LINK HERE */}
+              {/* <Link
+                to="/scan" // Link to ScanPage (or ScanQRPage)
                 className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
                   isActive('/scan')
                     ? 'text-blue-600 dark:text-blue-500'
@@ -40,11 +40,11 @@ const Layout: React.FC = () => {
               >
                 <QrCode className="h-5 w-5 mr-1" />
                 Scan
-              </Link>
+              </Link> */}
               <Link
-                to="/admin"
+                to="/admindashboard/admin" // Link to AdminDashboard (under /admindashboard)
                 className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
-                  isActive('/admin')
+                  isActive('/admindashboard/admin') // Correct isActive check for nested route
                     ? 'text-blue-600 dark:text-blue-500'
                     : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500'
                 }`}
@@ -53,9 +53,9 @@ const Layout: React.FC = () => {
                 Admin
               </Link>
               <Link
-                to="/settings"
+                to="/admindashboard/settings" // Link to SettingsPage (under /admindashboard)
                 className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
-                  isActive('/settings')
+                  isActive('/admindashboard/settings') // Correct isActive check for nested route
                     ? 'text-blue-600 dark:text-blue-500'
                     : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500'
                 }`}
@@ -69,10 +69,10 @@ const Layout: React.FC = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <Outlet />
+        <Outlet /> {/*  This is where the content of the matched route will be rendered */}
       </main>
     </div>
   );
 };
 
-export default Layout;
+export default Layout;  

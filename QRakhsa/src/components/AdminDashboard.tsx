@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, MapPin, Bell, CheckCircle } from 'lucide-react';
 import type { Alert, Employee } from '../types';
+import EmployeeCard from './EmployeeCard';
 
 interface AdminDashboardProps {
   alerts: Alert[];
@@ -12,6 +13,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, employees, onRe
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterDepartment, setFilterDepartment] = React.useState('');
   const [filterBloodType, setFilterBloodType] = React.useState('');
+  const [selectedEmployee, setSelectedEmployee] = React.useState<Employee | null>(null);
 
   const filteredEmployees = employees.filter(employee => {
     const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -22,6 +24,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, employees, onRe
   });
 
   const activeAlerts = alerts.filter(alert => alert.status === 'active');
+
+  const handleEmployeeCardClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+  };
 
   return (
     <div className="space-y-6">
@@ -83,49 +89,27 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, employees, onRe
                 />
               </div>
             </div>
-            <select
-              value={filterDepartment}
-              onChange={(e) => setFilterDepartment(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-2"
-            >
-              <option value="">All Departments</option>
-              {Array.from(new Set(employees.map(emp => emp.department))).map(dept => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
-            </select>
-            <select
-              value={filterBloodType}
-              onChange={(e) => setFilterBloodType(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-2"
-            >
-              <option value="">All Blood Types</option>
-              {Array.from(new Set(employees.map(emp => emp.bloodType))).map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredEmployees.map(employee => (
-              <div key={employee.id} className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+              <div
+                key={employee.id}
+                className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow duration-150"
+                onClick={() => handleEmployeeCardClick(employee)}
+              >
                 <h3 className="font-medium text-gray-900 dark:text-white">{employee.name}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{employee.department}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Blood Type: {employee.bloodType}</p>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {employee.medicalConditions.map((condition, index) => (
-                    <span
-                      key={index}
-                      className="text-xs bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-2 py-1 rounded-full"
-                    >
-                      {condition}
-                    </span>
-                  ))}
-                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      {selectedEmployee && (
+        <EmployeeCard employee={selectedEmployee} onSOS={() => alert('SOS function in Admin Dashboard')} />
+      )}
     </div>
   );
 };

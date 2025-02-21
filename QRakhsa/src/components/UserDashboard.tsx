@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import QRCode from "qrcode.react";
+import React, { useState, useRef } from "react";
+import QRCode, { QRCodeCanvas } from "qrcode.react";
 
 interface UserDashboardProps {
   user: {
@@ -15,6 +15,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const [updatedUser, setUpdatedUser] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [qrData, setQrData] = useState<string>(JSON.stringify(user));
+  const qrRef = useRef<QRCode | null>(null); // Create a ref for the QRCode component
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,6 +28,33 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const generateUpdatedQR = () => {
     setQrData(JSON.stringify(updatedUser)); // Replace old QR with new data
     setIsEditing(false);
+  };
+
+  const downloadQRCode = () => {
+    console.log("downloadQRCode function called");
+  
+    setTimeout(() => { // Add a small delay
+      if (qrRef.current) {
+        console.log("qrRef.current is valid (delayed):", qrRef.current);
+        const canvas = qrRef.current.getCanvas();
+        console.log("Canvas element (delayed):", canvas);
+        if (canvas) {
+          const url = canvas.toDataURL("image/png");
+          console.log("Data URL (delayed):", url);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "emergency_qr_code.png";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          console.log("Download initiated (delayed)");
+        } else {
+          console.error("Canvas is null or undefined (delayed)");
+        }
+      } else {
+        console.error("qrRef.current is null or undefined (delayed)");
+      }
+    }, 100); // 100 milliseconds delay (adjust if needed)
   };
 
   return (
@@ -138,17 +166,31 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
             Edit Info
           </button>
         ) : (
-          <button
-            onClick={generateUpdatedQR}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-          >
-            Save & Generate New QR
-          </button>
+          <div className="flex"> {/* Container for buttons when editing */}
+            <button
+              onClick={generateUpdatedQR}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2" // Added mr-2 for spacing
+            >
+              Save & Generate New QR
+            </button>
+            <button
+              onClick={downloadQRCode}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
+              Download QR
+            </button>
+          </div>
         )}
       </div>
 
-      <div className="mt-4 flex justify-center">
-        <QRCode value={qrData} size={150} />
+      <div className="mt-4 flex flex-col items-center"> {/* Changed to flex column and items-center */}
+        <QRCodeCanvas value={qrData} size={150} ref={qrRef} />
+        <button
+          onClick={downloadQRCode}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mt-3" // Added mt-3 for spacing
+        >
+          Download QR
+        </button>
       </div>
     </div>
   );

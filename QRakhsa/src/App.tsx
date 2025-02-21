@@ -1,16 +1,19 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import EmployeeCard from "./components/EmployeeCard";
-import AdminDashboard from "./components/AdminDashboard";
-import UserDashboard from "./components/UserDashboard";
-import UserSignupForm from "./components/UserSignupForm";
-import UserProfile from "./components/userProfile";
-import type { Employee, Alert } from "./types";
-import Homepage from './components/HomePage';
-import LoginPage from './components/LoginPage'; // Import LoginPage Component  <-- ADDED IMPORT
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Import Outlet if not already
+import Layout from "./components/Layout"; // Assuming Layout.tsx is in components folder
+import EmployeeCard from "./components/EmployeeCard"; // Assuming EmployeeCard.tsx is in components folder
+import AdminDashboard from "./components/AdminDashboard"; // Assuming AdminDashboard.tsx is in components folder
+import UserDashboard from "./components/UserDashboard"; // Assuming UserDashboard.tsx is in components folder
+import UserSignupForm from "./components/UserSignupForm"; // Assuming UserSignupForm.tsx is in components folder
+import UserProfile from "./components/userProfile"; // Assuming userProfile.tsx is in components folder (check casing if needed)
+import type { Employee, Alert } from "./types"; // Assuming types.ts or types.tsx is in src folder
+import Homepage from './components/HomePage'; // Assuming HomePage.tsx is in components folder
+import LoginPage from './components/LoginPage'; // Assuming LoginPage.tsx is in components folder
+// import ScanQR from './components/ScanQR'; // Assuming ScanQR.tsx is in components/ScanQR.tsx
+// import SettingsPage from './components/SettingsPage'; // Assuming SettingsPage.tsx is in components/SettingsPage.tsx
 
-// Mock Employee Data
+
+// Mock Employee Data (Keep this - no changes needed)
 const mockEmployees: Employee[] = [
   {
     id: "EMP001",
@@ -19,7 +22,7 @@ const mockEmployees: Employee[] = [
     department: "Engineering",
     emergencyContacts: [
       { name: "Jane Doe", relationship: "Spouse", phone: "+1-555-0123" },
-      { name: "James Doe", relationship: "Brother", phone: "+1-555-0124" },
+      { name: "James Doe", relationship: "Spouse", phone: "+1-555-0124" },
     ],
     medicalConditions: ["Asthma", "Penicillin Allergy"],
     location: { lat: 40.7128, lng: -74.006 },
@@ -38,7 +41,9 @@ const mockEmployees: Employee[] = [
   },
 ];
 
-// Initial Alerts
+console.log(mockEmployees[0])
+
+// Initial Alerts (Keep this - no changes needed)
 const mockAlerts: Alert[] = [];
 
 function App() {
@@ -70,18 +75,31 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/">
-          <Route
-            index
-            element={<Homepage />}
-          />
+        <Route path="/"> {/* Layout for top-level routes */}
+          <Route index element={<Homepage />} /> {/* Home page at "/" */}
+          {/* <Route path="scan" element={<ScanQR />} /> Scan QR Page at "/scan" */}
+          {/* <Route path="settings" element={<SettingsPage />} />  Settings Page at "/settings" */}
         </Route>
-        <Route path="/AdminDashboard" element={<Layout />}>
+
+        <Route path="/admindashboard" element={<Layout />}> {/* Layout for admin dashboard routes */}
+
+          <Route index element={<AdminDashboard // Render AdminDashboard component for index route
+            alerts={alerts}
+            employees={mockEmployees}
+            onResolveAlert={handleResolveAlert}
+          />} />
+          <Route path="admin" element={<AdminDashboard // Admin management at "/admindashboard/admin"
+            alerts={alerts}
+            employees={mockEmployees}
+            onResolveAlert={handleResolveAlert}
+          />} />
+          {/* <Route path="settings" element={<SettingsPage />} /> Settings within Admin at "/admindashboard/settings" */}
+          {/* <Route path="scanqr" element={<ScanQR />} /> Scan QR within Admin at "/admindashboard/scanqr" */}
           <Route
-            index
+            path="employee-card" // Example EmployeeCard route for admin section at "/admindashboard/employee-card"
             element={
               <div className="container mx-auto px-4 py-8">
-                <h2 className="text-xl font-bold mb-4">Select Employee:</h2>
+                <h2 className="text-xl font-bold mb-4">Select Employee (Admin View):</h2>
                 <select
                   className="border p-2 rounded"
                   onChange={(e) => {
@@ -102,43 +120,29 @@ function App() {
               </div>
             }
           />
-
-          <Route
-            path="admin"
-            element={
-              <div className="container mx-auto px-4 py-8">
-                <AdminDashboard
-                  alerts={alerts}
-                  employees={mockEmployees}
-                  onResolveAlert={handleResolveAlert}
-                />
-              </div>
-            }
-          />
-
         </Route>
 
-          <Route
-            path="signup"
-            element={
-              <div className="container mx-auto px-4 py-8">
-                <UserSignupForm />
-              </div>
-            }
-          />
-
-        <Route path="/login" element={<LoginPage />} />  {/* ADDED LOGIN ROUTE */}
-
         <Route
-          path="user"
+          path="/employee/:employeeId"
+          element={
+            // <Layout>
+              <EmployeeCard />
+            // </Layout>
+          }
+        />
+
+
+        <Route path="/signup" element={<UserSignupForm />} /> {/* Signup page at "/signup" (outside layouts) */}
+        <Route path="/login" element={<LoginPage />} /> {/* Login page at "/login" (outside layouts) */}
+        <Route path="/user/:employeeId" element={<UserProfile />} /> {/* User Profile at "/user/:employeeId" (outside layouts) */}
+        <Route
+          path="/user-dashboard" // User Dashboard at "/user-dashboard" (outside admin layout)
           element={
             <div className="container mx-auto px-4 py-8">
               <UserDashboard user={selectedEmployee} onSOS={handleSOS} />
             </div>
           }
         />
-
-        <Route path="user/:employeeId" element={<UserProfile />} />
       </Routes>
     </BrowserRouter>
   );
