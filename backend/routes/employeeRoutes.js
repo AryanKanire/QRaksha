@@ -10,19 +10,19 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Register Employee & Generate QR Code
 router.post("/register", async (req, res) => {
   try {
-    const { name, bloodType, department, emergencyContacts, medicalConditions, password } = req.body;
+    const { username, name, bloodType, department, emergencyContacts, medicalConditions, password } = req.body;
 
     console.log(req.body);
 
     // Validate required fields
-    if (!name || !bloodType || !department || !Array.isArray(emergencyContacts) || emergencyContacts.length === 0 || !password) {
+    if (!username || !name || !bloodType || !department || !Array.isArray(emergencyContacts) || emergencyContacts.length === 0 || !password) {
       return res.status(400).json({ error: "All fields are required, and emergencyContacts must be a non-empty array." });
     }
 
-    // Check if Employee already exists
-    const existingEmployee = await Employee.findOne({ name });
+    // Check if username already exists
+    const existingEmployee = await Employee.findOne({ username });
     if (existingEmployee) {
-      return res.status(400).json({ error: "Employee with this name already exists. Please use a different name." });
+      return res.status(400).json({ error: "Username already taken. Please choose a different one." });
     }
 
     // Hash Password
@@ -30,6 +30,7 @@ router.post("/register", async (req, res) => {
 
     // Create new employee
     const employee = new Employee({
+      username,
       name,
       bloodType,
       department,
@@ -58,15 +59,15 @@ router.post("/register", async (req, res) => {
 // Employee Login
 router.post("/login", async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { username, password } = req.body;
 
     // Validate input
-    if (!name || !password) {
-      return res.status(400).json({ error: "Name and password are required." });
+    if (!username || !password) {
+      return res.status(400).json({ error: "Username and password are required." });
     }
 
-    // Find Employee
-    const employee = await Employee.findOne({ name });
+    // Find Employee by username
+    const employee = await Employee.findOne({ username });
     if (!employee) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
@@ -78,7 +79,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT Token
-    const token = jwt.sign({ id: employee._id, name: employee.name }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: employee._id, username: employee.username }, JWT_SECRET, { expiresIn: "1h" });
 
     res.json({ message: "Login successful!", token });
   } catch (error) {

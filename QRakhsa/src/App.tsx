@@ -136,7 +136,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} /> {/* Login page at "/login" (outside layouts) */}
         <Route path="/user/:employeeId" element={<UserProfile />} /> {/* User Profile at "/user/:employeeId" (outside layouts) */}
         <Route
-          path="/user-dashboard" // User Dashboard at "/user-dashboard" (outside admin layout)
+          path="/user" // User Dashboard at "/user-dashboard" (outside admin layout)
           element={
             <div className="container mx-auto px-4 py-8">
               <UserDashboard user={selectedEmployee} onSOS={handleSOS} />
