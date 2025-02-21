@@ -7,6 +7,8 @@ import UserDashboard from "./components/UserDashboard";
 import UserSignupForm from "./components/UserSignupForm";
 import UserProfile from "./components/userProfile";
 import type { Employee, Alert } from "./types";
+import Homepage from './components/HomePage';
+import LoginPage from './components/LoginPage'; // Import LoginPage Component  <-- ADDED IMPORT
 
 // Mock Employee Data
 const mockEmployees: Employee[] = [
@@ -68,7 +70,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/">
+          <Route
+            index
+            element={<Homepage />}
+          />
+        </Route>
+        <Route path="/AdminDashboard" element={<Layout />}>
           <Route
             index
             element={
@@ -108,6 +116,8 @@ function App() {
             }
           />
 
+        </Route>
+
           <Route
             path="signup"
             element={
@@ -116,7 +126,8 @@ function App() {
               </div>
             }
           />
-        </Route>
+
+        <Route path="/login" element={<LoginPage />} />  {/* ADDED LOGIN ROUTE */}
 
         <Route
           path="user"

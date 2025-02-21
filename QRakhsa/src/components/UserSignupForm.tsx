@@ -7,8 +7,9 @@ const UserSignupForm: React.FC = () => {
   const [department, setDepartment] = useState("");
   const [bloodType, setBloodType] = useState("");
   const [medicalConditions, setMedicalConditions] = useState("");
-  // New state for password
+  // New state for password and username
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(""); // New state for username
 
   // Emergency contacts state
   const [emergencyContacts, setEmergencyContacts] = useState<
@@ -36,7 +37,7 @@ const UserSignupForm: React.FC = () => {
   // Function to handle form submission and generate QR code
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !department || !bloodType || !password) { // Added password to required fields
+    if (!name || !department || !bloodType || !password || !username) { // Added username to required fields
       alert("Please fill in all required fields.");
       return;
     }
@@ -50,7 +51,8 @@ const UserSignupForm: React.FC = () => {
         .map((cond) => cond.trim())
         .filter(Boolean),
       emergencyContacts,
-      password: password, // Include password in userData
+      password: password,
+      username: username, // Include username in userData
     };
 
     setQrData(JSON.stringify(userData));
@@ -75,6 +77,31 @@ const UserSignupForm: React.FC = () => {
             />
           </div>
 
+          {/* New Username Field */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border p-2 rounded"
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">Password</label>
+            <input
+              type="password" // Using type="password" for password input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border p-2 rounded"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">Department</label>
             <input
@@ -87,6 +114,7 @@ const UserSignupForm: React.FC = () => {
             />
           </div>
 
+
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">Blood Type</label>
             <input
@@ -95,19 +123,6 @@ const UserSignupForm: React.FC = () => {
               onChange={(e) => setBloodType(e.target.value)}
               className="w-full border p-2 rounded"
               placeholder="Enter your blood type"
-              required
-            />
-          </div>
-
-          {/* New Password Field */}
-          <div>
-            <label className="block text-gray-700 dark:text-gray-300 mb-1">Password</label>
-            <input
-              type="password" // Using type="password" for password input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border p-2 rounded"
-              placeholder="Enter your password"
               required
             />
           </div>

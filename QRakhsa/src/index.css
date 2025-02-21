@@ -16,6 +16,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Add this rule to override min-height on #root */
+#root {
+  min-height: auto !important; /* Override min-height: 100vh */
+  height: auto !important;      /* Also set height to auto for good measure */
+}
+
 @layer base {
   body {
     @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
