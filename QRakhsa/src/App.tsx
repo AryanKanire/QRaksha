@@ -9,6 +9,7 @@ import UserProfile from "./components/userProfile"; // Assuming userProfile.tsx 
 import type { Employee, Alert } from "./types"; // Assuming types.ts or types.tsx is in src folder
 import Homepage from './components/HomePage'; // Assuming HomePage.tsx is in components folder
 import LoginPage from './components/LoginPage'; // Assuming LoginPage.tsx is in components folder
+import AdminLoginPage from "./components/AdminLoginPage";
 // import ScanQR from './components/ScanQR'; // Assuming ScanQR.tsx is in components/ScanQR.tsx
 // import SettingsPage from './components/SettingsPage'; // Assuming SettingsPage.tsx is in components/SettingsPage.tsx
 
@@ -130,6 +131,9 @@ function App() {
             // </Layout>
           }
         />
+
+        <Route path="/admin/login" element={<AdminLoginPage />} /> {/* Admin login page */}
+
 
 
         <Route path="/signup" element={<UserSignupForm />} /> {/* Signup page at "/signup" (outside layouts) */}

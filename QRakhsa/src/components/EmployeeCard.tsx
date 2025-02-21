@@ -1,23 +1,48 @@
-import React from 'react';
-import { Phone, Heart, Building2, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Phone, Heart, Building2, AlertTriangle, CheckCircle } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import type { Employee } from '../types';
 
 interface EmployeeCardProps {
   employee: Employee;
-  onSOS?: () => void;
 }
 
-const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onSOS }) => {
-  const [showConfirm, setShowConfirm] = React.useState(false);
+const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [sosSent, setSosSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSOSClick = () => {
     setShowConfirm(true);
+    setError(null);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setShowConfirm(false);
-    onSOS?.();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `http://localhost:5000/api/sos/${employee.id}`,
+        {}, // No body needed
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setSosSent(true);
+      } else {
+        setError('Failed to send SOS alert. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error sending SOS:', err);
+      setError('An error occurred while sending the SOS.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -84,13 +109,23 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onSOS }) => {
       </div>
 
       <div className="mt-6">
-        {!showConfirm ? (
+        {sosSent ? (
+          <div className="flex items-center justify-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 py-3 px-4 rounded-lg">
+            <CheckCircle className="h-5 w-5 mr-2" />
+            SOS Alert Sent Successfully
+          </div>
+        ) : !showConfirm ? (
           <button
             onClick={handleSOSClick}
             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+            disabled={loading}
           >
-            <AlertTriangle className="h-5 w-5 mr-2" />
-            SOS Emergency Alert
+            {loading ? "Sending..." : (
+              <>
+                <AlertTriangle className="h-5 w-5 mr-2" />
+                SOS Emergency Alert
+              </>
+            )}
           </button>
         ) : (
           <div className="space-y-2">
@@ -101,18 +136,22 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onSOS }) => {
               <button
                 onClick={handleConfirm}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
+                disabled={loading}
               >
-                Confirm SOS
+                {loading ? "Sending..." : "Confirm SOS"}
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
                 className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-lg"
+                disabled={loading}
               >
                 Cancel
               </button>
             </div>
           </div>
         )}
+
+        {error && <p className="text-center text-red-500 mt-2">{error}</p>}
       </div>
     </div>
   );
