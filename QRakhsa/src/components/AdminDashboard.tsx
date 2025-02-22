@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Search, MapPin, Bell, CheckCircle } from 'lucide-react';
-import type { Alert, Employee } from '../types';
-import EmployeeCard from './EmployeeCard';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Search, MapPin, Bell, CheckCircle } from "lucide-react";
+import type { Alert, Employee } from "../types";
+import EmployeeCard from "./EmployeeCard";
 
-const API_BASE_URL = "http://localhost:5000/api/admin"; // Update if needed
+const API_BASE_URL = "http://localhost:5000/api/admin";
 
 interface AdminDashboardProps {
   alerts: Alert[];
@@ -13,43 +13,41 @@ interface AdminDashboardProps {
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, onResolveAlert }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
-  // Fetch employees on component mount
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("adminToken"); // Retrieve the "adminToken"
+        if (!token) throw new Error("No adminToken found");
+
         const response = await axios.get(`${API_BASE_URL}/employees`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (Array.isArray(response.data)) {
-          setEmployees(response.data); // Ensure data is an array before setting state
+          setEmployees(response.data);
         } else {
-          console.error("Unexpected response format for employees:", response.data);
+          console.error("Unexpected response format:", response.data);
           setEmployees([]);
         }
       } catch (error) {
-        console.error('Error fetching employees:', error);
+        console.error("Error fetching employees:", error);
       }
     };
 
     fetchEmployees();
   }, []);
 
-  console.log("Employees:", employees); // Debugging
-  console.log("Search Term:", searchTerm); // Debugging
-
-  const filteredEmployees = employees.filter(employee =>
+  const filteredEmployees = employees.filter((employee) =>
     (employee.name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
-    (employee.medicalConditions ?? []).some(condition =>
+    (employee.medicalConditions ?? []).some((condition) =>
       (condition?.toLowerCase() ?? "").includes(searchTerm.toLowerCase())
     )
   );
 
-  const activeAlerts = alerts.filter(alert => alert.status === 'active');
+  const activeAlerts = alerts.filter((alert) => alert.status === "active");
 
   return (
     <div className="space-y-6">
@@ -60,8 +58,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, onResolveAlert 
           Active Alerts ({activeAlerts.length})
         </h2>
         <div className="space-y-4">
-          {activeAlerts.map(alert => {
-            const employee = employees.find(emp => emp.id === alert.employeeId);
+          {activeAlerts.map((alert) => {
+            const employee = employees.find((emp) => emp.id === alert.employeeId);
             if (!employee) return null;
 
             return (
@@ -99,36 +97,34 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ alerts, onResolveAlert 
       {/* Employee Directory */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Employee Directory</h2>
-        <div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name or medical condition..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
-          </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by name or medical condition..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredEmployees.map(employee => (
-              <div
-                key={employee.id}
-                className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow duration-150"
-                onClick={() => setSelectedEmployee(employee)}
-              >
-                <h3 className="font-medium text-gray-900 dark:text-white">{employee.name}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{employee.department}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Blood Type: {employee.bloodType}</p>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {filteredEmployees.map((employee) => (
+            <div
+              key={employee.id}
+              className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow duration-150"
+              onClick={() => setSelectedEmployee(employee)}
+            >
+              <h3 className="font-medium text-gray-900 dark:text-white">{employee.name}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{employee.department}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Blood Type: {employee.bloodType}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {selectedEmployee && (
-        <EmployeeCard employee={selectedEmployee} onSOS={() => alert('SOS function in Admin Dashboard')} />
+        <EmployeeCard employee={selectedEmployee} onSOS={() => alert("SOS function in Admin Dashboard")} />
       )}
     </div>
   );

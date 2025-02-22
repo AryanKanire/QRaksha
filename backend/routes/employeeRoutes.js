@@ -57,6 +57,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Employee Login
+// Employee Login
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -81,12 +82,14 @@ router.post("/login", async (req, res) => {
     // Generate JWT Token
     const token = jwt.sign({ id: employee._id, username: employee.username }, JWT_SECRET, { expiresIn: "1h" });
 
-    res.json({ message: "Login successful!", token });
+    // ✅ Include `userId` in response
+    res.json({ message: "Login successful!", token, userId: employee._id });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // Get Employee by ID (for QR Code Scanning)
 router.get("/:id", async (req, res) => {
