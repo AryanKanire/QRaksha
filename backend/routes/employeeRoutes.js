@@ -91,6 +91,69 @@ router.post("/login", async (req, res) => {
 });
 
 
+// Edit Employee Details by ID
+router.put("/edit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, name, bloodType, department, emergencyContacts, medicalConditions, password } = req.body;
+
+    // Validate required fields
+    if (!username || !name || !bloodType || !department || !Array.isArray(emergencyContacts) || emergencyContacts.length === 0) {
+      return res.status(400).json({ error: "All fields are required, and emergencyContacts must be a non-empty array." });
+    }
+
+    // Validate emergencyContacts structure
+    if (!emergencyContacts.every(contact => 
+      typeof contact === "object" && 
+      contact.name && 
+      contact.relationship && 
+      contact.phone
+    )) {
+      return res.status(400).json({ error: "Each emergency contact must be an object with 'name', 'relationship', and 'phone' fields." });
+    }
+
+    // Find the employee by ID
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found." });
+    }
+
+    // Check if the new username is already taken by another employee
+    if (username !== employee.username) {
+      const existingEmployee = await Employee.findOne({ username });
+      if (existingEmployee) {
+        return res.status(400).json({ error: "Username already taken. Please choose a different one." });
+      }
+    }
+
+    // Update employee details
+    employee.username = username;
+    employee.name = name;
+    employee.bloodType = bloodType;
+    employee.department = department;
+    employee.emergencyContacts = emergencyContacts; // Ensure this matches the schema
+    employee.medicalConditions = medicalConditions;
+
+    // Update password if provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      employee.password = hashedPassword;
+    }
+
+    // Save the updated employee
+    await employee.save();
+
+    res.status(200).json({
+      message: "Employee details updated successfully!",
+      employee: { ...employee.toObject(), password: undefined } // Exclude password
+    });
+  } catch (error) {
+    console.error("Edit Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 // Get Employee by ID (for QR Code Scanning)
 router.get("/:id", async (req, res) => {
   try {

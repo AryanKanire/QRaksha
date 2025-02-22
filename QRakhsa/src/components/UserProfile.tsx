@@ -8,6 +8,7 @@ const UserProfile = () => {
   const { employeeId } = useParams();
   const [employee, setEmployee] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/employees/${employeeId}`)
@@ -23,9 +24,22 @@ const UserProfile = () => {
     setShowConfirm(true);
   };
 
-  const handleConfirm = () => {
-    setShowConfirm(false);
-    alert("Emergency alert sent!");
+  const handleConfirm = async () => {
+    setIsSending(true);
+    try {
+      const response = await axios.post(`http://localhost:5000/api/sos/${employeeId}/sos`);
+      if (response.status === 200) {
+        alert("Emergency alert sent!");
+      } else {
+        alert("Failed to send emergency alert.");
+      }
+    } catch (error) {
+      console.error("Error sending SOS alert:", error);
+      alert("Failed to send emergency alert.");
+    } finally {
+      setIsSending(false);
+      setShowConfirm(false);
+    }
   };
 
   return (
@@ -90,8 +104,19 @@ const UserProfile = () => {
           <div className="space-y-2">
             <p className="text-center text-red-600 dark:text-red-500 font-medium">Are you sure you want to send an emergency alert?</p>
             <div className="flex gap-2">
-              <button onClick={handleConfirm} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">Confirm SOS</button>
-              <button onClick={() => setShowConfirm(false)} className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-lg">Cancel</button>
+              <button 
+                onClick={handleConfirm} 
+                disabled={isSending}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg disabled:bg-red-400"
+              >
+                {isSending ? "Sending..." : "Confirm SOS"}
+              </button>
+              <button 
+                onClick={() => setShowConfirm(false)} 
+                className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-lg"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}

@@ -49,12 +49,51 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
     }));
   };
 
+  const handleEmergencyContactChange = (index: number, field: string, value: string) => {
+    const updatedContacts = [...updatedUser.emergencyContacts];
+    updatedContacts[index] = { ...updatedContacts[index], [field]: value };
+    setUpdatedUser((prevUser) => ({
+      ...prevUser,
+      emergencyContacts: updatedContacts,
+    }));
+  };
+
+  const handleMedicalConditionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setUpdatedUser((prevUser) => ({
+      ...prevUser,
+      medicalConditions: value.split(",").map((condition) => condition.trim()),
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/employees/edit/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user data");
+      }
+
+      const updatedData = await response.json();
+      setUpdatedUser(updatedData.employee);
+      setIsEditing(false);
+      generateUpdatedQR();
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
+
   const generateUpdatedQR = () => {
     try {
       // Generate a link to the user profile page using localhost
       const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
       setQrData(userProfileLink);
-      setIsEditing(false);
       setQrError(null); // Clear any previous errors
     } catch (error) {
       setQrError("Failed to generate QR code: Data too large.");
@@ -104,7 +143,69 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
           </>
         ) : (
           <>
-            {/* Edit form fields */}
+            {/* Edit Form */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={updatedUser.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300">Department</label>
+                <input
+                  type="text"
+                  name="department"
+                  value={updatedUser.department}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300">Blood Type</label>
+                <input
+                  type="text"
+                  name="bloodType"
+                  value={updatedUser.bloodType}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300">Medical Conditions (comma-separated)</label>
+                <input
+                  type="text"
+                  value={updatedUser.medicalConditions.join(", ")}
+                  onChange={handleMedicalConditionsChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300">Emergency Contacts</label>
+                {updatedUser.emergencyContacts.map((contact, index) => (
+                  <div key={index} className="space-y-2">
+                    <input
+                      type="text"
+                      value={contact.name}
+                      onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Name"
+                    />
+                    <input
+                      type="text"
+                      value={contact.phone}
+                      onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Phone"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -120,10 +221,16 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
         ) : (
           <div className="flex">
             <button
-              onClick={generateUpdatedQR}
+              onClick={handleSave}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
             >
               Save & Generate New QR
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+            >
+              Cancel
             </button>
           </div>
         )}

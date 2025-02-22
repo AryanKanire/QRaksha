@@ -42,7 +42,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 // ✅ Fetch All Employees (Protected)
 router.get("/employees", authMiddleware, async (req, res) => {
   try {
@@ -77,13 +76,28 @@ router.get("/employee/:id", authMiddleware, async (req, res) => {
   }
 });
 
-
 // ✅ Delete Employee by ID (Protected)
 router.delete("/del/employee/:id", authMiddleware, async (req, res) => {
   try {
     await Employee.findByIdAndDelete(req.params.id);
     res.json({ message: "Employee deleted successfully" });
   } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// ✅ Resolve SOS Alert (Protected)
+router.delete("/resolve-sos/:id", authMiddleware, async (req, res) => {
+  try {
+    const alert = await SOSAlert.findById(req.params.id);
+    if (!alert) {
+      return res.status(404).json({ error: "SOS Alert not found" });
+    }
+
+    await SOSAlert.findByIdAndDelete(req.params.id);
+    res.json({ message: "SOS Alert resolved and removed" });
+  } catch (error) {
+    console.error("Error resolving SOS alert:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
