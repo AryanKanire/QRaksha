@@ -12,7 +12,7 @@ const Homepage = () => {
         </Link>
       </div>
       <div style={styles.loginButtonTopRightContainer}>
-        <Link to="/login" style={styles.loginButton}>
+        <Link to="/logintype" style={styles.loginButton}>
           Continue with Login
         </Link>
       </div>
