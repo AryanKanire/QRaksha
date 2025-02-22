@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Removed Link import
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext"; // Import AuthContext
 
@@ -74,7 +74,10 @@ const LoginPage: React.FC = () => {
 
         <button onClick={handleLogin} className="btn-primary w-full">Login</button>
 
-        {/* Signup option removed from here */}
+        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
+          New user?
+          <Link to="/signup" className="text-blue-500 hover:underline ml-1">Signup</Link>
+        </p>
       </div>
     </div>
   );
