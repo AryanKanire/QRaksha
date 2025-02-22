@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -11,6 +12,7 @@ import Homepage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
 import UserLayout from "./components/UserLayout";
 import AdminLoginPage from "./components/AdminLoginPage";
+import LoginType from "./components/LoginTypes"; // Import LoginType
 
 const mockEmployees: Employee[] = [
   {
@@ -93,7 +95,17 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={loggedInUser ? <Navigate to="/user" replace /> : <Homepage />} />
+      <Route
+        path="/"
+        element={
+          <Homepage
+            loggedInUser={loggedInUser}
+            adminLoggedIn={adminLoggedIn}
+            onLogout={handleLogout}
+            onAdminLogout={handleAdminLogout}
+          />
+        }
+      />
       <Route path="/signup" element={<UserSignupForm />} />
       <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
       <Route
@@ -101,6 +113,8 @@ function App() {
         element={<AdminLoginPage onAdminLogin={handleAdminLogin} />}
       />
       <Route path="/user/:employeeId" element={<UserProfile />} />
+      <Route path="/logintype" element={<LoginType />} /> {/* Add LoginType Route */}
+
 
       {/* Admin Routes */}
       <Route
