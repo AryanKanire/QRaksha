@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Import Outlet if not already
-import Layout from "./components/Layout"; // Assuming Layout.tsx is in components folder
-import EmployeeCard from "./components/EmployeeCard"; // Assuming EmployeeCard.tsx is in components folder
-import AdminDashboard from "./components/AdminDashboard"; // Assuming AdminDashboard.tsx is in components folder
-import UserDashboard from "./components/UserDashboard"; // Assuming UserDashboard.tsx is in components folder
-import UserSignupForm from "./components/UserSignupForm"; // Assuming UserSignupForm.tsx is in components folder
-import UserProfile from "./components/userProfile"; // Assuming userProfile.tsx is in components folder (check casing if needed)
-import type { Employee, Alert } from "./types"; // Assuming types.ts or types.tsx is in src folder
-import Homepage from './components/HomePage'; // Assuming HomePage.tsx is in components folder
-import LoginPage from './components/LoginPage'; // Assuming LoginPage.tsx is in components folder
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; 
+import Layout from "./components/Layout"; 
+import EmployeeCard from "./components/EmployeeCard";
+import AdminDashboard from "./components/AdminDashboard"; 
+import UserDashboard from "./components/UserDashboard"; 
+import UserSignupForm from "./components/UserSignupForm"; 
+import UserProfile from "./components/userProfile";
+import type { Employee, Alert } from "./types"; 
+import Homepage from './components/HomePage'; 
+import LoginPage from './components/LoginPage'; 
 import UserLayout from "./components/UserLayout";
 
 
