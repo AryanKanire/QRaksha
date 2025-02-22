@@ -156,6 +156,7 @@ function App() {
       <Route path="/user" element={loggedInUser ? <UserLayout /> : <Navigate to="/login" replace />}>
         <Route index element={<UserDashboard user={selectedEmployee} onSOS={handleSOS} />} />
       </Route>
+      <Route path="/user-profile/:employeeId" element={<UserProfile />} />
     </Routes>
   );
 }

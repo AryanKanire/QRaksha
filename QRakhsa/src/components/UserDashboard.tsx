@@ -30,13 +30,9 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
         const userData = await response.json();
         setUpdatedUser(userData);
 
-        // Reduce the data size for the QR code
-        const minimalData = {
-          userId: userData.userId, // Include only essential data
-          name: userData.name,
-          bloodType: userData.bloodType,
-        };
-        setQrData(JSON.stringify(minimalData));
+        // Generate a link to the user profile page using localhost
+        const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+        setQrData(userProfileLink);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -55,12 +51,9 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
 
   const generateUpdatedQR = () => {
     try {
-      const minimalData = {
-        userId: updatedUser.userId,
-        name: updatedUser.name,
-        bloodType: updatedUser.bloodType,
-      };
-      setQrData(JSON.stringify(minimalData));
+      // Generate a link to the user profile page using localhost
+      const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+      setQrData(userProfileLink);
       setIsEditing(false);
       setQrError(null); // Clear any previous errors
     } catch (error) {
