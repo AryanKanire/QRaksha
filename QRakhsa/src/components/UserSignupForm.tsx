@@ -216,11 +216,7 @@ const UserSignupForm: React.FC = () => {
                 Download QR Code
               </button>
             </div>
-        </div>
-
-        
-
-        
+        </div>   
       )}
     </div>
   );
