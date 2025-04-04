@@ -68,7 +68,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/employees/edit/${userId}`, {
+      const response = await fetch(`https://qrakhsa-backend.onrender.com/api/employees/edit/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
   const generateUpdatedQR = () => {
     try {
       // Generate a link to the user profile page using localhost
-      const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+      const userProfileLink = `https://qrakhsa-backend.onrender.com/user-profile/${userId}`; // Adjust the port if necessary
       setQrData(userProfileLink);
       setQrError(null); // Clear any previous errors
     } catch (error) {
