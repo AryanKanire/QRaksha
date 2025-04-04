@@ -9,6 +9,39 @@ const authMiddleware = require("../middleware/auth");
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 
+router.post("/signup", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ error: "Username and password are required" });
+    }
+
+    // Check if the admin already exists
+    const existingAdmin = await Admin.findOne({ username });
+    if (existingAdmin) {
+      return res.status(400).json({ error: "Admin already exists" });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password.trim(), salt);
+
+    // Create new admin
+    const newAdmin = new Admin({ username, password: hashedPassword });
+    await newAdmin.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ id: newAdmin._id, username: newAdmin.username }, JWT_SECRET, { expiresIn: "10d" });
+
+    res.status(201).json({ message: "Admin registered successfully", token });
+  } catch (error) {
+    console.error("Signup Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 // ✅ Admin Login
 router.post("/login", async (req, res) => {
   try {
