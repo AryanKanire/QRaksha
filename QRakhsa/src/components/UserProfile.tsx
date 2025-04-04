@@ -11,7 +11,7 @@ const UserProfile = () => {
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
-    axios.get(`https://qrakhsa-backend.onrender.com/api/user-profile/${employeeId}`)
+    axios.get(`https://qrakhsa-backend.onrender.com/api/employees/user-profile/${employeeId}`)
       .then((response) => setEmployee(response.data))
       .catch((error) => console.error("Error fetching employee data:", error));
   }, [employeeId]);
