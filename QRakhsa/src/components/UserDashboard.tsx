@@ -187,23 +187,31 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
               <div>
                 <label className="block text-gray-700 dark:text-gray-300">Emergency Contacts</label>
                 {updatedUser.emergencyContacts.map((contact, index) => (
-                  <div key={index} className="space-y-2">
-                    <input
-                      type="text"
-                      value={contact.name}
-                      onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Name"
-                    />
-                    <input
-                      type="text"
-                      value={contact.phone}
-                      onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Phone"
-                    />
-                  </div>
-                ))}
+                <div key={index} className="space-y-2">
+                  <input
+                    type="text"
+                    value={contact.name}
+                    onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Name"
+                  />
+                  {/* Add this input field for relationship */}
+                  <input
+                    type="text"
+                    value={contact.relationship || ""}
+                    onChange={(e) => handleEmergencyContactChange(index, "relationship", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Relationship"
+                  />
+                  <input
+                    type="text"
+                    value={contact.phone}
+                    onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Phone"
+                  />
+                </div>
+              ))}
               </div>
             </div>
           </>

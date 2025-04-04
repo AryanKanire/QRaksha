@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "All fields are required, and emergencyContacts must be a non-empty array." });
     }
 
-    // Check if username already exists
+    // Check if username already 
     const existingEmployee = await Employee.findOne({ username });
     if (existingEmployee) {
       return res.status(400).json({ error: "Username already taken. Please choose a different one." });
@@ -44,6 +44,8 @@ router.post("/register", async (req, res) => {
     // Generate QR Code using Employee ID
     const qrCodeURL = await QRCode.toDataURL(`http://localhost:5174/user-profile/${employee._id}`);
     employee.qrCode = qrCodeURL;
+    console.log(employee.qrCode)
+    
     await employee.save(); // Save QR Code in DB
 
     res.status(201).json({
@@ -130,7 +132,7 @@ router.put("/edit/:id", async (req, res) => {
     employee.username = username;
     employee.name = name;
     employee.bloodType = bloodType;
-    employee.department = department;
+    employee.department = department; 
     employee.emergencyContacts = emergencyContacts; // Ensure this matches the schema
     employee.medicalConditions = medicalConditions;
 

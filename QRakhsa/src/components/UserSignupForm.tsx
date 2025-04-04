@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react"; // Removed useRef
 import axios from "axios";
-import QRCode, { QRCodeCanvas } from "qrcode.react";
+// Removed QRCodeCanvas and related imports as they are no longer displayed here
+// If QRCode is used elsewhere, keep 'import QRCode from "qrcode.react";'
 
 const UserSignupForm: React.FC = () => {
-  // Form state
+  // Form state (remains the same)
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
   const [bloodType, setBloodType] = useState("");
@@ -11,19 +12,17 @@ const UserSignupForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
-  // Emergency contacts state
+  // Emergency contacts state (remains the same)
   const [emergencyContacts, setEmergencyContacts] = useState<
     { name: string; phone: string }[]
   >([]);
   const [newContactName, setNewContactName] = useState("");
   const [newContactPhone, setNewContactPhone] = useState("");
 
-  // QR Code & Submission state
-  const [qrData, setQrData] = useState<string | null>(null);
+  // Submission state (removed qrData and qrRef)
   const [submitted, setSubmitted] = useState(false);
-  const qrRef = useRef<HTMLDivElement>(null);
 
-  // Add emergency contact
+  // Add emergency contact (remains the same)
   const addEmergencyContact = () => {
     if (newContactName.trim() && newContactPhone.trim()) {
       setEmergencyContacts([
@@ -35,7 +34,7 @@ const UserSignupForm: React.FC = () => {
     }
   };
 
-  // Handle user signup
+  // Handle user signup (modified)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !department || !bloodType || !password || !username) {
@@ -64,26 +63,38 @@ const UserSignupForm: React.FC = () => {
 
       if (response.status === 201) {
         alert("Registration successful!");
-        setQrData(response.data.employee.qrCode);
-        setSubmitted(true);
+        setSubmitted(true); // Set submitted to true to show the success message
+
+        // --- REMOVED QR CODE FETCHING LOGIC ---
+        // const employeeId = response.data.employee._id;
+        // try {
+        //   const qrResponse = await axios.get(
+        //     `http://localhost:5000/api/employees/${employeeId}`
+        //   );
+        //   if (qrResponse.status === 200 && qrResponse.data.qrCode) {
+        //     // setQrData(qrResponse.data.qrCode); // No longer setting QR data here
+        //   } else {
+        //     alert("Failed to fetch QR code after registration.");
+        //     // setQrData(null);
+        //   }
+        // } catch (qrError: any) {
+        //   console.error("Error fetching QR code:", qrError);
+        //   alert("Error fetching QR code after registration.");
+        //   // setQrData(null);
+        // }
+        // --- END OF REMOVED LOGIC ---
+
       }
     } catch (error: any) {
-      alert(error.response?.data?.error || "Registration failed");
+      // Improved error handling slightly
+      const errorMessage = error.response?.data?.error || "Registration failed. Please check your details or try again later.";
+      alert(errorMessage);
+      console.error("Registration error:", error.response || error);
     }
   };
 
-  // Download QR Code
-  const downloadHighResQR = () => {
-    if (qrRef.current) {
-      const canvas = qrRef.current.querySelector("canvas");
-      if (canvas) {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "qraksha-qr.png";
-        link.click();
-      }
-    }
-  };
+  // --- REMOVED downloadHighResQR FUNCTION ---
+  // const downloadHighResQR = () => { ... };
 
   return (
     <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
@@ -93,6 +104,7 @@ const UserSignupForm: React.FC = () => {
 
       {!submitted ? (
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Form fields remain the same */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Name
@@ -101,7 +113,7 @@ const UserSignupForm: React.FC = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="Enter your name"
               required
             />
@@ -115,7 +127,7 @@ const UserSignupForm: React.FC = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="Enter your username"
               required
             />
@@ -129,7 +141,7 @@ const UserSignupForm: React.FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="Enter your password"
               required
             />
@@ -143,7 +155,7 @@ const UserSignupForm: React.FC = () => {
               type="text"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="Enter your department"
               required
             />
@@ -157,7 +169,7 @@ const UserSignupForm: React.FC = () => {
               type="text"
               value={bloodType}
               onChange={(e) => setBloodType(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="Enter your blood type"
               required
             />
@@ -165,13 +177,13 @@ const UserSignupForm: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Medical Conditions
+              Medical Conditions (Optional)
             </label>
             <input
               type="text"
               value={medicalConditions}
               onChange={(e) => setMedicalConditions(e.target.value)}
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               placeholder="e.g., Asthma, Diabetes (comma-separated)"
             />
           </div>
@@ -179,60 +191,65 @@ const UserSignupForm: React.FC = () => {
           {/* Emergency Contacts */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Emergency Contacts
+              Emergency Contacts (Optional)
             </label>
-            <div className="flex flex-wrap gap-2 mb-2">
+             {/* Display existing contacts */}
+             <ul className="mb-2 space-y-1">
+              {emergencyContacts.map((contact, index) => (
+                <li key={index} className="text-sm text-gray-600 dark:text-gray-400">
+                  {contact.name} - {contact.phone}
+                </li>
+              ))}
+            </ul>
+            <div className="flex flex-col sm:flex-row gap-2 mb-2">
               <input
                 type="text"
                 value={newContactName}
                 onChange={(e) => setNewContactName(e.target.value)}
-                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 flex-1"
+                 className="border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none flex-1"
                 placeholder="Contact Name"
               />
               <input
-                type="text"
+                type="tel" // Use type="tel" for phone numbers
                 value={newContactPhone}
                 onChange={(e) => setNewContactPhone(e.target.value)}
-                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 flex-1"
+                 className="border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none flex-1"
                 placeholder="Contact Phone"
               />
               <button
                 type="button"
                 onClick={addEmergencyContact}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-150 ease-in-out"
+                disabled={!newContactName.trim() || !newContactPhone.trim()} // Disable if fields are empty
               >
-                Add
+                Add Contact
               </button>
             </div>
+
           </div>
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-3 rounded-lg w-full transition duration-150 ease-in-out"
           >
-            Submit & Generate QR
+            Register
           </button>
         </form>
       ) : (
+        // --- MODIFIED SUCCESS MESSAGE ---
         <div className="text-center mt-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-            QR Code Generated
+          <h3 className="text-xl font-bold text-green-600 dark:text-green-400">
+            Registration Successful!
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Save this QR code for emergencies.
+            Thank you for registering. Please log in to your account to view and download your QR code.
           </p>
-          <div className="flex flex-col items-center">
-            <div ref={qrRef}>
-              {qrData && <QRCodeCanvas value={qrData} size={150} />}
-            </div>
-            <button
-              onClick={downloadHighResQR}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-            >
-              Download QR Code
-            </button>
-          </div>
+           {/* Optionally add a link to the login page */}
+           {/* <a href="/login" className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 ease-in-out">
+             Go to Login
+           </a> */}
         </div>
+        // --- END OF MODIFIED SUCCESS MESSAGE ---
       )}
     </div>
   );
