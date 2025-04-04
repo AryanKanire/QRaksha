@@ -23,7 +23,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/employees/${userId}`);
+        const response = await fetch(`https://qrakhsa-backend.onrender.com/api/employees/${userId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
@@ -31,7 +31,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
         setUpdatedUser(userData);
 
         // Generate a link to the user profile page using localhost
-        const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+        const userProfileLink = `https://qrakhsa-backend.onrender.com/user-profile/${userId}`; // Adjust the port if necessary
         setQrData(userProfileLink);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -68,7 +68,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/employees/edit/${userId}`, {
+      const response = await fetch(`https://qrakhsa-backend.onrender.com/api/employees/edit/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
   const generateUpdatedQR = () => {
     try {
       // Generate a link to the user profile page using localhost
-      const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+      const userProfileLink = `https://qrakhsa-backend.onrender.com/user-profile/${userId}`; // Adjust the port if necessary
       setQrData(userProfileLink);
       setQrError(null); // Clear any previous errors
     } catch (error) {
@@ -187,23 +187,31 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
               <div>
                 <label className="block text-gray-700 dark:text-gray-300">Emergency Contacts</label>
                 {updatedUser.emergencyContacts.map((contact, index) => (
-                  <div key={index} className="space-y-2">
-                    <input
-                      type="text"
-                      value={contact.name}
-                      onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Name"
-                    />
-                    <input
-                      type="text"
-                      value={contact.phone}
-                      onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Phone"
-                    />
-                  </div>
-                ))}
+                <div key={index} className="space-y-2">
+                  <input
+                    type="text"
+                    value={contact.name}
+                    onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Name"
+                  />
+                  {/* Add this input field for relationship */}
+                  <input
+                    type="text"
+                    value={contact.relationship || ""}
+                    onChange={(e) => handleEmergencyContactChange(index, "relationship", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Relationship"
+                  />
+                  <input
+                    type="text"
+                    value={contact.phone}
+                    onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Phone"
+                  />
+                </div>
+              ))}
               </div>
             </div>
           </>

@@ -12,7 +12,8 @@ import Homepage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
 import UserLayout from "./components/UserLayout";
 import AdminLoginPage from "./components/AdminLoginPage";
-import LoginType from "./components/LoginTypes"; // Import LoginType
+import LoginType from "./components/LoginTypes"; 
+import { useAuth } from "./context/AuthContext"; 
 
 const mockEmployees: Employee[] = [
   {
@@ -34,16 +35,13 @@ const mockAlerts: Alert[] = [];
 function App() {
   const [alerts, setAlerts] = useState<Alert[]>(mockAlerts);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>(mockEmployees[0]);
-  const [loggedInUser, setLoggedInUser] = useState<string | null>(localStorage.getItem("userLoggedIn"));
+  const { isAuthenticated } = useAuth(); // Use isAuthenticated from AuthContext
   const [adminLoggedIn, setAdminLoggedIn] = useState<boolean>(localStorage.getItem("adminLoggedIn") === "true");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem("adminLoggedIn") === "true") {
       setAdminLoggedIn(true);
-    }
-    if (localStorage.getItem("userLoggedIn")) {
-      setLoggedInUser(localStorage.getItem("userLoggedIn"));
     }
   }, []);
 
@@ -67,24 +65,11 @@ function App() {
     );
   };
 
-  const handleLogin = (userId: string) => {
-    setLoggedInUser(userId);
-    localStorage.setItem("userLoggedIn", userId);
-    console.log("User logged in:", userId);
-    navigate("/user");
-  };
-
   const handleAdminLogin = () => {
     setAdminLoggedIn(true);
     localStorage.setItem("adminLoggedIn", "true");
     console.log("Admin logged in");
     navigate("/admindashboard");
-  };
-
-  const handleLogout = () => {
-    setLoggedInUser(null);
-    localStorage.removeItem("userLoggedIn");
-    navigate("/login");
   };
 
   const handleAdminLogout = () => {
@@ -99,20 +84,24 @@ function App() {
         path="/"
         element={
           <Homepage
-            loggedInUser={loggedInUser}
+            loggedInUser={isAuthenticated}
             adminLoggedIn={adminLoggedIn}
-            onLogout={handleLogout}
+            onLogout={() => {
+              localStorage.removeItem("userId");
+              localStorage.removeItem("authToken");
+              window.location.href = "/login"; // Force reload to clear context state
+            }}
             onAdminLogout={handleAdminLogout}
           />
         }
       />
       <Route path="/signup" element={<UserSignupForm />} />
-      <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route
         path="/adminlogin"
         element={<AdminLoginPage onAdminLogin={handleAdminLogin} />}
       />
-      <Route path="/user/:employeeId" element={<UserProfile />} />
+      <Route path="/user-profile/:employeeId" element={<UserProfile />} />
       <Route path="/logintype" element={<LoginType />} /> {/* Add LoginType Route */}
 
 
@@ -123,10 +112,6 @@ function App() {
       >
         <Route
           index
-          element={<AdminDashboard alerts={alerts} employees={mockEmployees} onResolveAlert={handleResolveAlert} />}
-        />
-        <Route
-          path="admin"
           element={<AdminDashboard alerts={alerts} employees={mockEmployees} onResolveAlert={handleResolveAlert} />}
         />
         <Route
@@ -153,7 +138,7 @@ function App() {
       </Route>
 
       {/* User Routes */}
-      <Route path="/user" element={loggedInUser ? <UserLayout /> : <Navigate to="/login" replace />}>
+      <Route path="/user" element={isAuthenticated ? <UserLayout /> : <Navigate to="/login" replace />}>
         <Route index element={<UserDashboard user={selectedEmployee} onSOS={handleSOS} />} />
       </Route>
       <Route path="/user-profile/:employeeId" element={<UserProfile />} />

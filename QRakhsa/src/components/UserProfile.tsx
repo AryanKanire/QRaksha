@@ -27,7 +27,7 @@ const UserProfile = () => {
   const handleConfirm = async () => {
     setIsSending(true);
     try {
-      const response = await axios.post(`http://localhost:5000/api/sos/${employeeId}/sos`);
+      const response = await axios.post(`https://qrakhsa-backend.onrender.com/api/sos/${employeeId}/sos`);
       if (response.status === 200) {
         alert("Emergency alert sent!");
       } else {

@@ -15,7 +15,7 @@ const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onAdminLogin }) => {
   const handleLogin = async () => {
     try {
       // Send login request to the backend
-      const res = await axios.post("http://localhost:5000/api/admin/login", {
+      const res = await axios.post("https://qrakhsa-backend.onrender.com/api/admin/login", {
         username,
         password,
       });
