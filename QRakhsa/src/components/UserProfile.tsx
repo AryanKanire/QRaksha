@@ -11,7 +11,7 @@ const UserProfile = () => {
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/employees/${employeeId}`)
+    axios.get(`http://localhost:5000/api/user-profile/${employeeId}`)
       .then((response) => setEmployee(response.data))
       .catch((error) => console.error("Error fetching employee data:", error));
   }, [employeeId]);
