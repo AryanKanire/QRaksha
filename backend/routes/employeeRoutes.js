@@ -155,7 +155,7 @@ router.put("/edit/:id", async (req, res) => {
 
 
 // Get Employee by ID (for QR Code Scanning)
-router.get("/:id", async (req, res) => {
+router.get("user-profile/:id", async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id).lean();
     if (!employee) return res.status(404).json({ message: "Employee Not Found" });
