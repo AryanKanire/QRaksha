@@ -31,7 +31,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user: initialUser }) => {
         setUpdatedUser(userData);
 
         // Generate a link to the user profile page using localhost
-        const userProfileLink = `http://localhost:5173/user-profile/${userId}`; // Adjust the port if necessary
+        const userProfileLink = `https://qrakhsa-backend.onrender.com/user-profile/${userId}`; // Adjust the port if necessary
         setQrData(userProfileLink);
       } catch (error) {
         console.error("Error fetching user data:", error);
