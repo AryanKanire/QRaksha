@@ -27,7 +27,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/sos/${employee.id}`,
+        `https://qrakhsa-backend.onrender.com/api/sos/${employee.id}`,
         {}, // No body needed
         { headers: { Authorization: `Bearer ${token}` } }
       );
